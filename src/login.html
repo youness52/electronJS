@@ -1,0 +1,98 @@
+
+<script>
+    localStorage.setItem('userlogin','');
+</script>
+<html>
+
+    <head>
+        <title>login</title>
+        <!-- for-mobile-apps -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <!-- //for-mobile-apps -->
+        <link href="bootstrap.css" rel="stylesheet" type="text/css">
+        <!-- Custom Theme files -->
+        <link href="style.css" rel="stylesheet" type="text/css">
+        <!-- js -->
+        <script src="jquery-1.11.1.min.js"></script>
+        <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+
+        <!-- //js -->
+        <!-- start-smoth-scrolling -->
+        <link href="font-awesome.css" rel="stylesheet">
+  <script>
+//       $.ajax({
+//     type: "GET", // or "GET" depending on your preference
+//     url: 'http://'+localStorage.getItem('ipadr')+'/pos/'+"logout.php", // Replace with the correct URL to your logout script
+// });
+  </script>
+  </style>
+  <script>
+    $(document).ready(function () {
+if(localStorage.getItem('dark')=="ON"){
+    $("body").addClass("dark");
+    $("#snackbar").addClass("dark");	
+}
+});
+</script>
+        <!--- start-rate---->
+    </head>
+    
+    <body >
+        <div class="login">
+    
+            <div class="main-agileits">
+                <div class="form-w3agile">
+                    <h3>Connexion </h3>
+                    <form action="" method="post" id="login-form">
+    
+                        <div class="key">
+                            <i class="fa fa-lock" aria-hidden="true"></i>
+                            <input type="password" value="Password" name="Password" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Password';}" required="">
+                            <div class="clearfix"></div>
+                        </div>
+                        <input type="submit" name="login" value="Login"> <br>
+                        
+                    </form>
+                    <div id="msg"></div>
+                </div>
+            </div>
+        </div>
+        <script src="bootstrap.js"></script>
+        <script>
+            $(document).ready(function() {
+                $("#login-form").submit(function(e) {
+                    e.preventDefault();
+                    var formData = $(this).serialize();
+        
+                    $.ajax({
+                        url: 'http://'+localStorage.getItem('ipadr')+'/pos/'+"login_api.php",
+                        type: "POST",
+                        data: formData,
+                        dataType: "json",
+                        success: function(response) {
+                            if (response.status === "success") {
+                                // Redirect to the desired page (e.g., index.php)
+                                localStorage.setItem('userlogin', response.userlogin);
+                                localStorage.setItem('lastfin', response.lastfin);
+                                window.location.href = "index.html";
+                            } else {
+                                // Display an error message
+                                $("#msg").html('<div class="alert alert-danger fade in"><strong>Erreur!</strong> ' + response.message +'.</div>');
+                                //alert("Error: " + response.message);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            $('#msg').html('<div class="alert alert-danger fade in"><strong>Erreur!</strong> Erreur de connexion au serveur.</div>');
+                            console.error("API Error: " + error);
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+    
+    </html>
+    
+    
+    

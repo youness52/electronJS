@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bootstrap DataTable in Modal</title>
+
+  <!-- Include Bootstrap CSS and JavaScript -->
+  <link rel="stylesheet" href="bootstrap.css">
+  <script src="jquery-1.11.1.min.js"></script>
+
+  <script src="bootstrap.js"></script>
+
+  <style>
+    .divtop {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      background: white;
+      /* margin: 10px 0; */
+      padding: 10px 7px;
+      border-bottom: 2px solid;
+    }
+
+    .dark {
+      background: #333;
+      color: #fff;
+      border-color: #999;
+    }
+
+    .modal-dialog-centered {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-align: center;
+      align-items: center;
+      min-height: calc(100% - (0.5rem * 2));
+
+    }
+
+    .modal-content {
+
+      width: 100%;
+    }
+
+    .topbtn {
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+  <script>
+    $(document).ready(function () {
+      if (localStorage.getItem('dark') == "ON") {
+        $("body").addClass("dark");
+        $("#mdark1").addClass("dark");
+        $("#mdark2").addClass("dark");
+        $(".divtop").addClass("dark");
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <br>
+  <div class="divtop">
+    <div class="topbtn">
+      <a href="index.html">
+        <botton class="btn btn-default">Fermer</botton>
+      </a>
+      <botton class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter">Fermer la journée </botton>
+    </div>
+  </div>
+  <div class="container ">
+
+
+    <hr>
+    <!-- DataTable will be placed here -->
+    <table id="dataTableInModal" class="table table-sm table-hover ">
+      <thead>
+        <tr>
+          <th>Nº</th>
+          <th>Table</th>
+          <th>Date</th>
+          <th class="text-right">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <!-- Add more rows as needed -->
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="3">Total</th>
+          <th id="totalth" class="text-right"></th>
+        </tr>
+      </tfoot>
+    </table>
+    <div id="diverror"></div>
+
+  </div>
+
+  <div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" id="mdark1">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title" id="exampleModalLongTitle">Modal Header</h4>
+        </div>
+
+        <div class="modal-body" id="modalc">
+          <table class="table table-sm table-hover  " id="tableordersitems">
+            <thead>
+              <tr>
+
+                <th>Article</th>
+                <th>Quantité</th>
+                <th class="text-right">prix</th>
+
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- Add more rows as needed -->
+            </tbody>
+            <tfoot>
+              <tr>
+                <th colspan="2">Total</th>
+                <th id="totalitemcmd" class="text-right"></th>
+
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <!-- Modal footer with a close button -->
+
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content" id="mdark2">
+        <div class="modal-body">
+          Voulez vous fermer la journée ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Annuler </button>
+          <button type="button" class="btn btn-danger" onclick="chnagelastfin()">Fermer la journée</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>
+
+    $(document).ready(function () {
+      $.ajax({
+        url: 'http://' + localStorage.getItem('ipadr') + '/pos/' + 'orderslist_api.php',
+        method: 'POST', // You can change the HTTP method as needed
+        data: { userlogin: localStorage.getItem('userlogin'), lastfin: localStorage.getItem('lastfin') },
+        dataType: 'json', // Adjust the data type based on your response format
+        success: function (data) {
+          var table = $('#dataTableInModal'); // Initialize DataTables
+
+          // Get the tbody element
+          var tbody = table.children('tbody');
+          tbody.html('');
+          var totla = 0;
+          // Loop through the data and add rows to the tbody
+          $.each(data.tabs, function (index, item) {
+            var cols = '';
+            cols += '<tr onclick="showm(this)"><td>' + item.num + '</td>';
+            cols += '<td>' + item.table_id + '</td>';
+            cols += '<td>' + item.datecmd + '</td>';
+            cols += '<td class="text-right">' + parseFloat(item.total) + '</td></tr>';
+            totla += parseFloat(item.total);
+            tbody.append(cols);
+          });
+          $('#totalth').html(totla)
+        },
+        error: function (error) {
+          $('#diverror').html('<br><br><br> <h3 style="text-align:center"><code>Erreur de connexion</code></h3>');
+          console.error('Error fetching data: ' + error);
+        }
+      });
+
+    });
+  </script>
+  <script>
+    // jQuery code to get the value of a TD when a row is hovered
+    function showm(el) {
+      var tdValue = $(el).find("td:first").text();
+      var table = $('#tableordersitems'); // Initialize DataTables
+
+      // Get the tbody element
+      var tbody = table.children('tbody');
+      tbody.html('');
+      $.ajax({
+        url: 'http://' + localStorage.getItem('ipadr') + '/pos/' + 'ordersdetails_api.php',
+        method: 'POST', // You can change the HTTP method as needed
+        data: { idcmd: tdValue },
+        dataType: 'json', // Adjust the data type based on your response format
+        success: function (data) {
+
+          var totla = 0;
+          // Loop through the data and add rows to the tbody
+          $.each(data.tabs, function (index, item) {
+            var cols = '';
+            cols += '<tr>';
+            cols += '<td>' + item.item + '</td>';
+            cols += '<td>' + item.qty + '</td>';
+            cols += '<td class="text-right">' + parseFloat(item.price) + '</td></tr>';
+            totla += parseFloat(item.price) * parseFloat(item.qty);
+            tbody.append(cols);
+          });
+          $('#totalitemcmd').html(totla)
+        },
+        error: function (error) {
+          console.error('Error fetching data: ' + error);
+        }
+      });
+
+      // Get the value of the first TD in the hovered row
+      //$("#modalc").html("");
+      $("#exampleModalLongTitle").html('<h4> Nº : ' + tdValue + '</h4>');
+      $("#myModal").modal('show');
+    }
+
+    function chnagelastfin() {
+
+      $.ajax({
+        url: 'http://' + localStorage.getItem('ipadr') + '/pos/' + 'chnagelastfin_api.php',
+        method: 'POST', // You can change the HTTP method as needed
+        data: { userlogin: localStorage.getItem('userlogin') },
+        dataType: 'json', // Adjust the data type based on your response format
+        success: function (data) {
+          window.location.href = "login.html";
+        },
+        error: function (error) {
+          console.error('Error fetching data: ' + error);
+        }
+      });
+
+    }
+  </script>
+</body>
+
+</html>

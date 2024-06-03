@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <!-- <link rel="stylesheet" href="style.css"> -->
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    /* Button used to open the contact form - fixed at the bottom of the page */
+    .open-button {
+      background-color: white;
+      color: white;
+      padding: 10px;
+      border: 1px solid #555;
+      cursor: pointer;
+      opacity: 0.8;
+      position: fixed;
+      bottom: 23px;
+      right: 28px;
+      font-size: 25px;
+      outline: none;
+      border-radius: 50%;
+
+    }
+
+    /* The popup form - hidden by default */
+    .form-popup {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      right: 0px;
+      border-top: 0px solid #333;
+      z-index: 9;
+      margin: 0 5px;
+      border-radius: 25px;
+      width: 100%;
+    }
+
+    /* Add styles to the form container */
+    .form-container {
+      max-width: 100%;
+      padding: 26px;
+      background-color: white;
+    }
+
+    /* Full-width input fields */
+    .form-container input[type=text],
+    .form-container input[type=password] {
+      width: 100%;
+      padding: 12px;
+      margin: 5px 0 22px 0;
+      border: none;
+      background: #f1f1f1;
+    }
+
+    /* When the inputs get focus, do something */
+    .form-container input[type=text]:focus,
+    .form-container input[type=password]:focus {
+      background-color: #ddd;
+      outline: none;
+    }
+
+    /* Set a style for the submit/login button */
+    .form-container .btn {
+      background-color: #04AA6D;
+      color: white;
+      padding: 12px 10px;
+      border: none;
+      cursor: pointer;
+      width: 35%;
+      margin-bottom: 10px;
+      opacity: 0.8;
+      border: 1px solid black;
+    }
+
+    .btnc {
+      display: flex;
+
+      text-align: center;
+      justify-content: space-around;
+    }
+
+    /* Add a red background color to the cancel button */
+    .form-container .cancel {
+      background-color: White;
+      border: 1px solid black;
+      color: black;
+    }
+
+    /* Add some hover effects to buttons */
+    .form-container .btn:hover,
+    .open-button:hover {
+      opacity: 1;
+    }
+
+    .centered-div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* Optional: This centers the div vertically in the viewport */
+    }
+
+    .centered-div img {
+      width: 300px;
+    }
+
+    .centered-div2 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* Optional: This centers the div vertically in the viewport */
+    }
+
+    .centered-div2 img {
+      width: 70px;
+    }
+
+    * {
+      webkit-user-select: none;
+      /* Safari */
+      -ms-user-select: none;
+      /* IE 10 and IE 11 */
+      user-select: none;
+      /* Standard syntax */
+    }
+
+    .switch {
+      align-self: flex-end;
+      margin: 0.9375rem;
+    }
+
+    .inner-switch {
+      display: inline-block;
+      cursor: pointer;
+      border: 1px solid #555;
+      border-radius: 1.25rem;
+      width: 3.125rem;
+      text-align: center;
+      font-size: 1rem;
+      padding: 0.1875rem;
+      margin-left: 0.3125rem;
+    }
+
+    .dark,
+    .dark * {
+      background-color: #333;
+      color: #e6e6e6;
+      border-color: #e6e6e6;
+    }
+
+    input {
+      color: black;
+    }
+  </style>
+</head>
+
+<body id="bodyy">
+  <div class="centered-div2">
+    <img src="pos.png" />
+  </div>
+
+  <p style="text-align:center;"><B><b>POS APP</b></B></p>
+  <p>Les étapes pour l'utilisation de l'application <B>POS</B> :
+  <ul>
+    <li>Enregistrer l'adresse IP du serveur dans les paramètres.
+    </li>
+    <li>
+      Connecter <B>au même réseau de serveur </B> via WiFi.
+    </li>
+  </ul>
+  </p>
+  <br><br>
+  <div class="centered-div">
+    <img src="loading.gif" />
+  </div>
+
+  <button class="open-button" onclick="openForm()">⚙️</button>
+
+  <div class="form-popup" id="myForm">
+    <div class="form-container">
+      <hr>
+      <h3>Paramètres</h3>
+
+      <label for="ip" onclick="hhh();"><b>IP serveur</b></label>
+      <input type="text" placeholder="Ex : 192.168.1.66" name="email" id="ipadrinput" style="color:black">
+      <label for="ip" onclick="hhh();"><b>Dark mode</b></label>
+      <div class="switch">Dark mode:
+        <span onclick="dark(this)" id="swit" class="inner-switch">OFF</span>
+      </div>
+
+      <div class="btnc">
+        <button type="submit" class="btn" onclick="saveip();">✅Enregistrer</button>
+        <button type="button" class="btn cancel" onclick="closeForm()">❌Fermer</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function openForm() {
+      document.getElementById("myForm").style.display = "block";
+    }
+    function dark(el) {
+      document.getElementById("bodyy").classList.toggle("dark");
+
+      if (el.innerHTML == "ON") el.innerHTML = "OFF"; else el.innerHTML = "ON";
+      localStorage.setItem('dark', el.innerHTML);
+
+    }
+
+    function todark(el) {
+      let modd = localStorage.getItem('dark');
+      document.getElementById("swit").innerHTML = modd;
+      if (modd == "ON") el.classList.add('dark');
+
+    }
+    function closeForm() {
+      document.getElementById("myForm").style.display = "none";
+    }
+  </script>
+  <script>
+
+    function saveip() {
+      let ipadrvar = document.getElementById("ipadrinput").value;
+
+      localStorage.setItem('ipadr', ipadrvar);
+
+    }
+    function hhh() {
+      alert(localStorage.getItem('ipadr'));
+    }
+
+
+    window.onload = function () {
+      todark(document.getElementById("bodyy"));
+      let iptopos = localStorage.getItem('ipadr');
+
+      document.getElementById("ipadrinput").value = iptopos;
+
+
+      if (iptopos != null) {
+
+        fetch("http://" + iptopos + "/pos/login_api.php")
+          .then(response => {
+            if (response.ok) {
+              location.replace("index.html");
+            }
+
+          });
+
+      }
+
+    }
+
+  </script>
+</body>
+
+</html>
